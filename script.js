@@ -16,6 +16,10 @@ document.addEventListener('DOMContentLoaded', () => {
         { name: '☀️', img: '☀️' },
         { name: '🌟', img: '🌟' },
         { name: '🌟', img: '🌟' },
+        { name: '🌙', img: '🌙' },  // New symbol pair
+        { name: '🌙', img: '🌙' },  // New symbol pair
+        { name: '🔥', img: '🔥' },  // New symbol pair
+        { name: '🔥', img: '🔥' },  // New symbol pair
     ];
 
     function shuffle(array) {
@@ -75,3 +79,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
     startButton.addEventListener('click', createBoard);
 });
+
