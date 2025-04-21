@@ -1,77 +1,72 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const grid = document.querySelector('#game-board');
-    const startButton = document.getElementById('start-game');
-    let cardsChosen = [];
-    let cardsChosenId = [];
-    let cardsWon = [];
+  const symbols = ['🍕', '🚀', '🎮', '🐶', '🎵', '🌈', '🔥', '🍩'];
+  let cardsArray = [];
+  let cardsChosen = [];
+  let cardsChosenId = [];
+  let cardsWon = [];
 
-    const cardArray = [
-        { name: 'card1', img: 'images/distracted.png' },
-        { name: 'card1', img: 'images/distracted.png' },
-        { name: 'card2', img: 'images/drake.png' },
-        { name: 'card2', img: 'images/drake.png' },
-        { name: 'card3', img: 'images/fine.png' },
-        { name: 'card3', img: 'images/fine.png' },
-        { name: 'card4', img: 'images/rollsafe.png' },
-        { name: 'card4', img: 'images/rollsafe.png' },
-        { name: 'card5', img: 'images/success.png' },
-        { name: 'card5', img: 'images/success.png' },
-        // ...add more pairs as needed
-    ];
+  const grid = document.getElementById('game-board');
+  const startButton = document.getElementById('start-game');
 
-    function shuffle(array) {
-        array.sort(() => 0.5 - Math.random());
+  function shuffle(array) {
+    return array.sort(() => 0.5 - Math.random());
+  }
+
+  function createBoard() {
+    // Reset everything
+    cardsChosen = [];
+    cardsChosenId = [];
+    cardsWon = [];
+
+    // Duplicate and shuffle symbols
+    cardsArray = shuffle([...symbols, ...symbols]);
+    grid.innerHTML = '';
+
+    // Create cards
+    for (let i = 0; i < cardsArray.length; i++) {
+      const card = document.createElement('div');
+      card.classList.add('card');
+      card.setAttribute('data-id', i);
+      card.textContent = '?';
+      card.addEventListener('click', flipCard);
+      grid.appendChild(card);
+    }
+  }
+
+  function flipCard() {
+    const id = this.getAttribute('data-id');
+    if (cardsChosenId.includes(id) || cardsWon.includes(id)) return;
+
+    this.textContent = cardsArray[id];
+    this.classList.add('revealed');
+    cardsChosen.push(cardsArray[id]);
+    cardsChosenId.push(id);
+
+    if (cardsChosen.length === 2) {
+      setTimeout(checkMatch, 500);
+    }
+  }
+
+  function checkMatch() {
+    const cards = document.querySelectorAll('.card');
+    const [firstId, secondId] = cardsChosenId;
+
+    if (cardsChosen[0] === cardsChosen[1] && firstId !== secondId) {
+      cardsWon.push(firstId, secondId);
+    } else {
+      cards[firstId].textContent = '?';
+      cards[secondId].textContent = '?';
+      cards[firstId].classList.remove('revealed');
+      cards[secondId].classList.remove('revealed');
     }
 
-    function createBoard() {
-        shuffle(cardArray);
-        grid.innerHTML = '';
-        cardsWon = [];
+    cardsChosen = [];
+    cardsChosenId = [];
 
-        for (let i = 0; i < cardArray.length; i++) {
-            const card = document.createElement('img');
-            card.setAttribute('src', 'images/blank.png');
-            card.setAttribute('data-id', i);
-            card.addEventListener('click', flipCard);
-            grid.appendChild(card);
-        }
+    if (cardsWon.length === cardsArray.length) {
+      setTimeout(() => alert('🎉 You matched all the symbols!'), 300);
     }
+  }
 
-    function flipCard() {
-        let cardId = this.getAttribute('data-id');
-        if (!cardsChosenId.includes(cardId)) {
-            cardsChosen.push(cardArray[cardId].name);
-            cardsChosenId.push(cardId);
-            this.setAttribute('src', cardArray[cardId].img);
-            if (cardsChosen.length === 2) {
-                setTimeout(checkForMatch, 500);
-            }
-        }
-    }
-
-    function checkForMatch() {
-        const cards = document.querySelectorAll('#game-board img');
-        const firstCardId = cardsChosenId[0];
-        const secondCardId = cardsChosenId[1];
-
-        if (cardsChosen[0] === cardsChosen[1] && firstCardId !== secondCardId) {
-            cards[firstCardId].style.visibility = 'hidden';
-            cards[secondCardId].style.visibility = 'hidden';
-            cards[firstCardId].removeEventListener('click', flipCard);
-            cards[secondCardId].removeEventListener('click', flipCard);
-            cardsWon.push(cardsChosen);
-        } else {
-            cards[firstCardId].setAttribute('src', 'images/blank.png');
-            cards[secondCardId].setAttribute('src', 'images/blank.png');
-        }
-
-        cardsChosen = [];
-        cardsChosenId = [];
-
-        if (cardsWon.length === cardArray.length / 2) {
-            alert('Congratulations! You found them all!');
-        }
-    }
-
-    startButton.addEventListener('click', createBoard);
+  startButton.addEventListener('click', createBoard);
 });
