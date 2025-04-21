@@ -1,57 +1,77 @@
-const emojis = ["😺", "😺", "🐶", "🐶", "🐼", "🐼", "🐸", "🐸"];
-let shuffled = [];
-let firstCard = null;
-let secondCard = null;
-let lockBoard = false;
-let moves = 0;
+document.addEventListener('DOMContentLoaded', () => {
+    const grid = document.querySelector('#game-board');
+    const startButton = document.getElementById('start-game');
+    let cardsChosen = [];
+    let cardsChosenId = [];
+    let cardsWon = [];
 
-function startGame() {
-  shuffled = emojis.sort(() => 0.5 - Math.random());
-  const board = document.getElementById("game-board");
-  board.innerHTML = "";
-  moves = 0;
-  document.getElementById("moves").textContent = moves;
+    const cardArray = [
+        { name: '❤️', img: '❤️' },
+        { name: '❤️', img: '❤️' },
+        { name: '⭐', img: '⭐' },
+        { name: '⭐', img: '⭐' },
+        { name: '🍀', img: '🍀' },
+        { name: '🍀', img: '🍀' },
+        { name: '☀️', img: '☀️' },
+        { name: '☀️', img: '☀️' },
+        { name: '🌟', img: '🌟' },
+        { name: '🌟', img: '🌟' },
+    ];
 
-  shuffled.forEach((emoji, index) => {
-    const card = document.createElement("div");
-    card.classList.add("card");
-    card.dataset.emoji = emoji;
-    card.dataset.index = index;
-    card.addEventListener("click", revealCard);
-    board.appendChild(card);
-  });
-}
-
-function revealCard() {
-  if (lockBoard || this.classList.contains("revealed")) return;
-
-  this.textContent = this.dataset.emoji;
-  this.classList.add("revealed");
-
-  if (!firstCard) {
-    firstCard = this;
-  } else {
-    secondCard = this;
-    lockBoard = true;
-    moves++;
-    document.getElementById("moves").textContent = moves;
-
-    if (firstCard.dataset.emoji === secondCard.dataset.emoji) {
-      firstCard = null;
-      secondCard = null;
-      lockBoard = false;
-    } else {
-      setTimeout(() => {
-        firstCard.textContent = "";
-        secondCard.textContent = "";
-        firstCard.classList.remove("revealed");
-        secondCard.classList.remove("revealed");
-        firstCard = null;
-        secondCard = null;
-        lockBoard = false;
-      }, 800);
+    function shuffle(array) {
+        array.sort(() => 0.5 - Math.random());
     }
-  }
-}
 
-startGame();
+    function createBoard() {
+        shuffle(cardArray);
+        grid.innerHTML = '';
+        cardsWon = [];
+
+        for (let i = 0; i < cardArray.length; i++) {
+            const card = document.createElement('div');
+            card.setAttribute('class', 'card');
+            card.setAttribute('data-id', i);
+            card.textContent = '❓'; // Placeholder symbol
+            card.addEventListener('click', flipCard);
+            grid.appendChild(card);
+        }
+    }
+
+    function flipCard() {
+        let cardId = this.getAttribute('data-id');
+        if (!cardsChosenId.includes(cardId)) {
+            cardsChosen.push(cardArray[cardId].name);
+            cardsChosenId.push(cardId);
+            this.textContent = cardArray[cardId].img; // Display the symbol
+            if (cardsChosen.length === 2) {
+                setTimeout(checkForMatch, 500);
+            }
+        }
+    }
+
+    function checkForMatch() {
+        const cards = document.querySelectorAll('#game-board .card');
+        const firstCardId = cardsChosenId[0];
+        const secondCardId = cardsChosenId[1];
+
+        if (cardsChosen[0] === cardsChosen[1] && firstCardId !== secondCardId) {
+            cards[firstCardId].style.visibility = 'hidden';
+            cards[secondCardId].style.visibility = 'hidden';
+            cards[firstCardId].removeEventListener('click', flipCard);
+            cards[secondCardId].removeEventListener('click', flipCard);
+            cardsWon.push(cardsChosen);
+        } else {
+            cards[firstCardId].textContent = '❓';
+            cards[secondCardId].textContent = '❓';
+        }
+
+        cardsChosen = [];
+        cardsChosenId = [];
+
+        if (cardsWon.length === cardArray.length / 2) {
+            alert('Congratulations! You found them all!');
+        }
+    }
+
+    startButton.addEventListener('click', createBoard);
+});
