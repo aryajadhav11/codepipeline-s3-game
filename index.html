@@ -3,22 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Tic-Tac-Toe</title>
-  <link rel="stylesheet" href="style.css" />
+  <title>Emoji Match Game</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="container">
-    <h1>Tic-Tac-Toe</h1>
-    <div class="scoreboard">
-      <p>Player X: <span id="scoreX">0</span> | Player O: <span id="scoreO">0</span></p>
-      <p id="status">Player X's turn</p>
-    </div>
-    <div class="board" id="board">
-      <!-- 3x3 cells will be generated here by JS -->
-    </div>
-    <button onclick="restartGame()">Restart Game</button>
-  </div>
+  <h1>🧠 Emoji Match Game</h1>
+  <div class="moves">Moves: <span id="moves">0</span></div>
+  <div id="game-board"></div>
+  <button onclick="startGame()">Restart Game</button>
 
-  <script src="script.js" defer></script>
+  <script src="script.js"></script>
 </body>
 </html>
