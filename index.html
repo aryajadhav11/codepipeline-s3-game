@@ -9,17 +9,16 @@
 <body>
   <div class="container">
     <h1>Tic-Tac-Toe</h1>
-    
     <div class="scoreboard">
-      <span>Player X: <span id="score-x">0</span></span>
-      <span>Player O: <span id="score-o">0</span></span>
+      <p>Player X: <span id="scoreX">0</span> | Player O: <span id="scoreO">0</span></p>
+      <p id="status">Player X's turn</p>
     </div>
-    
-    <div id="board" class="board"></div>
-    
-    <p id="status" class="status">Player X's turn</p>
-    <button id="restart">Restart Game</button>
+    <div class="board" id="board">
+      <!-- 3x3 cells will be generated here by JS -->
+    </div>
+    <button onclick="restartGame()">Restart Game</button>
   </div>
-  <script src="script.js"></script>
+
+  <script src="script.js" defer></script>
 </body>
 </html>
